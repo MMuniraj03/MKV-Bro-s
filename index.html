@@ -3,50 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MKV Bro's Gaming-Garden</title>
+    <title>MKV Bro's Gaming-Garden Gate</title>
     <style>
         /* Dark Fantasy Aesthetic */
-        body {
-            background: #1a0f05;
-            color: #f0c05a;
-            font-family: 'Cinzel', serif;
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            background: #1a0f05; /* Deep dark stone color */
+            font-family: 'Cinzel', serif;
         }
 
-        .gate-container {
-            text-align: center;
-            border: 8px solid #5a3e1b;
-            padding: 40px;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                        url('https://www.transparenttextures.com/patterns/dark-stone.png');
+        /* 1. The main gate background */
+        .gate-stage {
+            width: 100vw;
+            height: 100vh;
+            background: url('gate_background.png') no-repeat center center;
+            background-size: contain;
+            position: relative;
             box-shadow: 0 0 50px #8b4513;
             border-radius: 50px 50px 0 0;
-            max-width: 500px;
-            position: relative;
+            max-width: 500px; /* Example max-width for consistency */
+            margin: auto;
             transition: transform 1.5s ease-in-out, opacity 1s;
         }
 
-        h1 { font-size: 3rem; margin-bottom: 0; text-shadow: 2px 2px #000; }
-        p { font-size: 1.1rem; color: #d4af37; line-height: 1.6; }
+        /* 2. Text styling over the background */
+        h1 { font-size: 3rem; margin-bottom: 0; text-shadow: 2px 2px #000; color: #f0c05a; position: relative; top: 10px; left: center; width: 100%; text-align: center;}
+        p { font-size: 1.1rem; color: #d4af37; line-height: 1.6; text-align: center; max-width: 80%; margin: 20px auto; position: relative; top: 10px;}
 
+        /* Equation and Input Box */
         .equation-box {
-            background: rgba(45, 25, 10, 0.9);
-            border: 3px solid #f0c05a;
-            padding: 20px;
-            font-size: 2.5rem;
-            margin: 30px 0;
+            position: absolute;
+            top: 60%; /* Adjust to match the box placement in the image */
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
+            font-size: 2.5rem;
+            color: #f0c05a;
         }
 
-        input {
+        #answerInput {
             width: 80px;
             background: transparent;
             border: none;
@@ -58,11 +61,48 @@
             font-family: 'Cinzel', serif;
         }
 
-        input::placeholder { color: #f0c05a; }
+        #answerInput::placeholder { color: #f0c05a; }
 
-        .skull { font-size: 4rem; margin-top: 20px; filter: drop-shadow(0 0 10px orange); }
+        /* 3. The Skull and Overlays */
+        .skull-hands {
+            position: absolute;
+            bottom: 20%; /* Match image placement */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
 
-        /* Animation for opening the door */
+        /* The transparent burning eye overlay */
+        #eyeAnimation {
+            position: absolute;
+            top: 25px; /* Adjust to match the skull's eye sockets */
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            opacity: 0; /* Hidden initially */
+            pointer-events: none;
+        }
+
+        /* Make the eye overlay visible when needed */
+        .burn-active {
+            opacity: 1 !important;
+        }
+
+        /* 4. The Tumbler (Decorative only in this version) */
+        .tumbler {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d4af37;
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        /* Gate open animation state */
         .gate-open {
             transform: scale(2) translateY(-100%);
             opacity: 0;
@@ -72,50 +112,66 @@
 </head>
 <body>
 
-    <div class="gate-container" id="gate">
-        <h1>MKV Bro's</h1>
-        <p>Welcome to MKV Bro's Gaming-Garden.<br>
-           Your loneliness ends here.<br>
-           Adventure, Action, Puzzles, Maths, Brain Training, Race Etc...</p>
+    <div class="gate-stage" id="gate">
         
-        <p><i>If you want to open the door first, Answer the question</i></p>
+        <p><i>Welcome to MKV Bro's Gaming-Garden.</i></p>
 
         <div class="equation-box">
             <span id="num1"></span> + <span id="num2"></span> + <span id="num3"></span> = 
             <input type="number" id="answerInput" placeholder="?" autocomplete="off">
         </div>
 
-        <div class="skull">💀</div>
+        <div class="skull-hands">
+            <div id="eyeAnimation" class="burning-eyes">
+                <img src="assets/skull_burning_eyes.gif" alt="" width="50" height="50">
+            </div>
+        </div>
+
+        <div class="tumbler">
+            <span>1</span> <span>7</span> <span>9</span> </div>
+
     </div>
 
+    <audio id="soundEffect" src="assets/correct_answer.mp3"></audio>
+
     <script>
-        // 1. Generate 3 random numbers between 1 and 9
+        // 1. Generate 3 random numbers (1-9)
         const n1 = Math.floor(Math.random() * 9) + 1;
         const n2 = Math.floor(Math.random() * 9) + 1;
         const n3 = Math.floor(Math.random() * 9) + 1;
         const correctAnswer = n1 + n2 + n3;
 
-        // 2. Display them on the page
+        // Display on page
         document.getElementById('num1').innerText = n1;
         document.getElementById('num2').innerText = n2;
         document.getElementById('num3').innerText = n3;
 
-        // 3. Listen for the answer
+        // 2. Interaction
         const input = document.getElementById('answerInput');
         input.addEventListener('input', function() {
             if (parseInt(this.value) === correctAnswer) {
-                openDoor();
+                correctAnswerActions();
             }
         });
 
-        function openDoor() {
-            const gate = document.getElementById('gate');
-            gate.classList.add('gate-open');
+        function correctAnswerActions() {
+            // A. Activate burning eyes
+            document.getElementById('eyeAnimation').classList.add('burn-active');
             
-            // Wait for animation, then redirect to your main games page
+            // B. Play the sound (Skeleton laugh)
+            const sound = document.getElementById('soundEffect');
+            sound.play().catch(e => console.log("Sound failed to play due to browser interaction rules."));
+
+            // C. Hold for a moment so they can see/hear, then open the door
             setTimeout(() => {
-                window.location.href = "home.html"; // Replace with your main page file
-            }, 1200);
+                const gate = document.getElementById('gate');
+                gate.classList.add('gate-open');
+            }, 1000); // 1-second delay for the sound and laugh
+
+            // D. Redirect
+            setTimeout(() => {
+                window.location.href = "main_games_page.html"; // Your next page
+            }, 2500); // 2.5 seconds total delay before leaving
         }
     </script>
 </body>
