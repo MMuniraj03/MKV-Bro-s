@@ -3,30 +3,47 @@
 <head>
 
 <title>MKV Bro's</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
 body{
 margin:0;
-font-family:Georgia;
+font-family:Georgia, serif;
 color:#ffd700;
 text-align:center;
-background:url("https://images.unsplash.com/photo-1604079628041-bb9c7e5c8a7a") center/cover no-repeat;
-height:100vh;
+background-image:url("https://images.unsplash.com/photo-1508612761958-e931f1f4f8b7");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+min-height:100vh;
+
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+overflow:hidden;
+}
+
+/* dark overlay */
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.65);
+z-index:-1;
 }
 
 /* TITLE */
 
 .title{
 font-size:48px;
+text-shadow:0 0 20px gold;
 margin-bottom:20px;
-text-shadow:0 0 15px gold;
 }
 
 /* DESCRIPTION */
@@ -40,25 +57,21 @@ line-height:1.6;
 /* SKELETON */
 
 .skeleton{
-font-size:90px;
+font-size:100px;
 margin-top:20px;
-animation:eyeGlow 2s infinite alternate;
-}
-
-@keyframes eyeGlow{
-from{filter:drop-shadow(0 0 5px red)}
-to{filter:drop-shadow(0 0 20px orange)}
+transition:0.4s;
+filter:drop-shadow(0 0 15px orange);
 }
 
 /* QUESTION BOX */
 
 .question-box{
-margin-top:20px;
-padding:15px 30px;
-border:2px solid gold;
-border-radius:8px;
-font-size:26px;
-background:rgba(0,0,0,0.6);
+margin-top:25px;
+padding:15px 35px;
+border-radius:10px;
+border:3px solid gold;
+background:rgba(50,50,50,0.7);
+font-size:28px;
 }
 
 /* SLOT NUMBERS */
@@ -66,30 +79,53 @@ background:rgba(0,0,0,0.6);
 .slot{
 display:inline-block;
 width:40px;
+transition:0.3s;
 }
 
-/* ? button */
+/* CLICK QUESTION */
 
 .ask{
 cursor:pointer;
 color:white;
-text-shadow:0 0 5px white;
+text-shadow:0 0 8px white;
 }
 
-/* FIRE LAMPS */
+/* FIRE TORCHES */
 
-.lamp{
+.torch{
 position:absolute;
-font-size:40px;
-animation:flicker 0.2s infinite alternate;
+font-size:45px;
+animation:flicker 0.15s infinite alternate;
 }
 
-.left{left:40px;top:50%;}
-.right{right:40px;top:50%;}
+.left{left:25px;top:50%;}
+.right{right:25px;top:50%;}
 
 @keyframes flicker{
-from{transform:scale(1)}
-to{transform:scale(1.1)}
+from{transform:scale(1) rotate(-2deg);}
+to{transform:scale(1.15) rotate(2deg);}
+}
+
+/* SLOT SPIN ANIMATION */
+
+.spin{
+animation:spin 0.1s linear infinite;
+}
+
+@keyframes spin{
+from{transform:translateY(-10px)}
+to{transform:translateY(10px)}
+}
+
+/* DOOR OPEN EFFECT */
+
+.open{
+animation:doorOpen 1.2s forwards;
+}
+
+@keyframes doorOpen{
+0%{transform:scale(1)}
+100%{transform:scale(2);opacity:0}
 }
 
 </style>
@@ -97,8 +133,8 @@ to{transform:scale(1.1)}
 
 <body>
 
-<div class="lamp left">🔥</div>
-<div class="lamp right">🔥</div>
+<div class="torch left">🔥</div>
+<div class="torch right">🔥</div>
 
 <div class="title">MKV Bro’s</div>
 
@@ -106,7 +142,8 @@ to{transform:scale(1.1)}
 
 Welcome to MKV Bro’s Gaming-Garden.<br>
 Your loneliness ends here.<br>
-We have Adventure, Action, Puzzles, Maths, Brain Training, Race Etc…<br><br>
+We have Adventure, Action, Puzzles, Maths,
+Brain Training, Race Etc…<br><br>
 
 If you want to open the door first,
 Answer the question
@@ -121,14 +158,13 @@ Answer the question
 <span id="n2" class="slot">5</span> +
 <span id="n3" class="slot">5</span>
 =
-
-<span class="ask" onclick="ask()">?</span>
+<span class="ask" onclick="enterAnswer()">?</span>
 
 </div>
 
 <script>
 
-let a,b,c,answer;
+let a,b,c,answer
 
 function newQuestion(){
 
@@ -144,36 +180,33 @@ document.getElementById("n3").innerText=c
 
 }
 
-function spin(){
+function spinNumbers(){
 
-let spins=10
+let slots=document.querySelectorAll(".slot")
 
-let interval=setInterval(function(){
+slots.forEach(s=>s.classList.add("spin"))
 
-document.getElementById("n1").innerText=Math.floor(Math.random()*9)+1
-document.getElementById("n2").innerText=Math.floor(Math.random()*9)+1
-document.getElementById("n3").innerText=Math.floor(Math.random()*9)+1
+setTimeout(()=>{
 
-spins--
-
-if(spins==0){
-clearInterval(interval)
+slots.forEach(s=>s.classList.remove("spin"))
 newQuestion()
+
+},900)
+
 }
 
-},100)
+function enterAnswer(){
 
-}
+let user=prompt("Enter the answer")
 
-function ask(){
-
-let user=prompt("Enter Answer")
+let skull=document.getElementById("skull")
 
 if(user==answer){
 
-document.getElementById("skull").innerText="😄"
+skull.innerText="😄"
+document.body.classList.add("open")
 
-setTimeout(function(){
+setTimeout(()=>{
 window.location="games.html"
 },1200)
 
@@ -181,9 +214,8 @@ window.location="games.html"
 
 else{
 
-document.getElementById("skull").innerText="😡"
-
-spin()
+skull.innerText="😡"
+spinNumbers()
 
 }
 
