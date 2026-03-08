@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>MKV Bro's Gaming Garden</title>
 
 <style>
@@ -8,60 +9,29 @@
 body{
 margin:0;
 height:100vh;
+background:url("gate.jpg");
+background-size:cover;
+background-position:center;
 display:flex;
 justify-content:center;
 align-items:center;
-background:radial-gradient(circle,#3b2600,#000);
-font-family:Trebuchet MS;
+font-family:Georgia;
 color:white;
 overflow:hidden;
 }
 
-/* Gate Doors */
-
-.door{
-position:fixed;
-top:0;
-width:50%;
-height:100%;
-background:linear-gradient(90deg,#5a3a00,#caa300,#5a3a00);
-z-index:10;
-transition:2s;
-}
-
-.left{
-left:0;
-border-right:4px solid #000;
-}
-
-.right{
-right:0;
-border-left:4px solid #000;
-}
-
-.open-left{
-transform:translateX(-100%);
-}
-
-.open-right{
-transform:translateX(100%);
-}
-
-/* Center panel */
-
-.panel{
-position:relative;
-z-index:20;
+.container{
 text-align:center;
-background:rgba(0,0,0,0.7);
+background:rgba(0,0,0,0.6);
 padding:40px;
 border-radius:20px;
-box-shadow:0 0 30px gold;
+box-shadow:0 0 40px gold;
 }
 
 h1{
 color:gold;
 font-size:50px;
+margin-bottom:20px;
 }
 
 .question{
@@ -69,9 +39,9 @@ font-size:40px;
 margin:20px;
 }
 
-button{
-font-size:26px;
-padding:12px 35px;
+.answers button{
+font-size:28px;
+padding:15px 40px;
 margin:10px;
 border:none;
 border-radius:10px;
@@ -80,7 +50,7 @@ cursor:pointer;
 transition:0.3s;
 }
 
-button:hover{
+.answers button:hover{
 background:orange;
 transform:scale(1.1);
 }
@@ -89,37 +59,74 @@ transform:scale(1.1);
 font-size:80px;
 cursor:pointer;
 margin-top:20px;
-animation:glow 1s infinite alternate;
+animation:skullglow 1s infinite alternate;
 }
 
-@keyframes glow{
+@keyframes skullglow{
+
 from{ text-shadow:0 0 10px orange; }
+
 to{ text-shadow:0 0 40px red; }
+
+}
+
+.torch{
+position:absolute;
+top:30%;
+width:80px;
+}
+
+.left{
+left:5%;
+}
+
+.right{
+right:5%;
+}
+
+#door{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:60px;
+color:gold;
+opacity:0;
+pointer-events:none;
+transition:1.5s;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="door left" id="leftDoor"></div>
-<div class="door right" id="rightDoor"></div>
+<img src="fire.gif" class="torch left">
+<img src="fire.gif" class="torch right">
 
-<div class="panel">
+<div class="container">
 
 <h1>MKV Bro's Gate</h1>
 
 <div id="question" class="question"></div>
 
-<div id="answers"></div>
+<div class="answers" id="answers"></div>
 
 <div id="skull">💀</div>
 
 </div>
 
-<script>
+<div id="door">Gate Opening...</div>
 
-/* Random math puzzle */
+<audio id="sound" src="open.mp3"></audio>
+
+<script>
 
 let a=Math.floor(Math.random()*10)+1
 let b=Math.floor(Math.random()*10)+1
@@ -135,26 +142,35 @@ options.sort(()=>Math.random()-0.5)
 
 let selected=null
 
-options.forEach(num=>{
-let btn=document.createElement("button")
-btn.innerHTML=num
-btn.onclick=function(){selected=num}
-document.getElementById("answers").appendChild(btn)
-})
+options.forEach(function(num){
 
-/* Skull unlock */
+let btn=document.createElement("button")
+
+btn.innerHTML=num
+
+btn.onclick=function(){
+
+selected=num
+
+}
+
+document.getElementById("answers").appendChild(btn)
+
+})
 
 document.getElementById("skull").onclick=function(){
 
 if(selected==correct){
 
-document.getElementById("leftDoor").classList.add("open-left")
-document.getElementById("rightDoor").classList.add("open-right")
+document.getElementById("sound").play()
+
+let door=document.getElementById("door")
+
+door.style.opacity=1
 
 setTimeout(function(){
 
-document.body.innerHTML=
-"<h1 style='color:gold;text-align:center;margin-top:20%'>WELCOME TO MKV BRO'S GAMING GARDEN 🎮</h1>"
+window.location="home.html"
 
 },2000)
 
