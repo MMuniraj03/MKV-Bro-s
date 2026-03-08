@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <title>MKV Bro's Gaming Garden</title>
 
 <style>
@@ -9,9 +8,8 @@
 body{
 margin:0;
 height:100vh;
-background:url("gate.jpg");
+background:url("gate.png") no-repeat center center;
 background-size:cover;
-background-position:center;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -20,71 +18,71 @@ color:white;
 overflow:hidden;
 }
 
-.container{
-text-align:center;
-background:rgba(0,0,0,0.6);
-padding:40px;
-border-radius:20px;
-box-shadow:0 0 40px gold;
+/* fire torches */
+
+.fire{
+position:absolute;
+width:120px;
 }
 
-h1{
-color:gold;
-font-size:50px;
-margin-bottom:20px;
+.leftfire{
+left:7%;
+top:35%;
+}
+
+.rightfire{
+right:7%;
+top:35%;
+}
+
+/* question panel */
+
+.panel{
+background:rgba(0,0,0,0.65);
+padding:30px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 0 25px orange;
 }
 
 .question{
 font-size:40px;
-margin:20px;
+margin-bottom:20px;
 }
 
-.answers button{
+/* buttons */
+
+button{
 font-size:28px;
-padding:15px 40px;
+padding:12px 35px;
 margin:10px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 background:gold;
 cursor:pointer;
-transition:0.3s;
 }
 
-.answers button:hover{
+button:hover{
 background:orange;
-transform:scale(1.1);
 }
+
+/* skull button */
 
 #skull{
 font-size:80px;
 cursor:pointer;
 margin-top:20px;
-animation:skullglow 1s infinite alternate;
+animation:glow 1s infinite alternate;
 }
 
-@keyframes skullglow{
-
+@keyframes glow{
 from{ text-shadow:0 0 10px orange; }
-
-to{ text-shadow:0 0 40px red; }
-
+to{ text-shadow:0 0 35px red; }
 }
 
-.torch{
-position:absolute;
-top:30%;
-width:80px;
-}
+/* gate opening screen */
 
-.left{
-left:5%;
-}
-
-.right{
-right:5%;
-}
-
-#door{
+#openGate{
 position:fixed;
 top:0;
 left:0;
@@ -94,91 +92,63 @@ background:black;
 display:flex;
 justify-content:center;
 align-items:center;
-font-size:60px;
+font-size:50px;
 color:gold;
 opacity:0;
 pointer-events:none;
-transition:1.5s;
+transition:2s;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<img src="fire.gif" class="torch left">
-<img src="fire.gif" class="torch right">
+<!-- fire torches -->
+<img src="fire.gif" class="fire leftfire">
+<img src="fire.gif" class="fire rightfire">
 
-<div class="container">
+<div class="panel">
 
-<h1>MKV Bro's Gate</h1>
+<div class="question">
+2 + 5 + 5 = ?
+</div>
 
-<div id="question" class="question"></div>
+<button onclick="selectAnswer(2)">2</button>
+<button onclick="selectAnswer(4)">4</button>
+<button onclick="selectAnswer(12)">12</button>
 
-<div class="answers" id="answers"></div>
-
-<div id="skull">💀</div>
+<div id="skull" onclick="checkAnswer()">💀</div>
 
 </div>
 
-<div id="door">Gate Opening...</div>
+<div id="openGate">WELCOME TO MKV GAMING GARDEN</div>
 
-<audio id="sound" src="open.mp3"></audio>
+<audio id="sound">
+<source src="laugh.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
-let a=Math.floor(Math.random()*10)+1
-let b=Math.floor(Math.random()*10)+1
-let c=Math.floor(Math.random()*10)+1
-
-let correct=a+b+c
-
-document.getElementById("question").innerHTML=a+" + "+b+" + "+c+" = ?"
-
-let options=[correct,correct+2,correct-2]
-
-options.sort(()=>Math.random()-0.5)
-
 let selected=null
 
-options.forEach(function(num){
-
-let btn=document.createElement("button")
-
-btn.innerHTML=num
-
-btn.onclick=function(){
-
+function selectAnswer(num){
 selected=num
-
 }
 
-document.getElementById("answers").appendChild(btn)
+function checkAnswer(){
 
-})
-
-document.getElementById("skull").onclick=function(){
-
-if(selected==correct){
+if(selected==12){
 
 document.getElementById("sound").play()
 
-let door=document.getElementById("door")
+let gate=document.getElementById("openGate")
 
-door.style.opacity=1
+gate.style.opacity=1
 
-setTimeout(function(){
+}else{
 
-window.location="home.html"
-
-},2000)
-
-}
-
-else{
-
-alert("Wrong answer ❌ Try again")
+alert("Wrong answer ❌")
 
 }
 
