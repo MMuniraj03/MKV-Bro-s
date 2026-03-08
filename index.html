@@ -1,173 +1,122 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Bro's Gaming-Garden</title>
+    <style>
+        /* Dark Fantasy Aesthetic */
+        body {
+            background: #1a0f05;
+            color: #f0c05a;
+            font-family: 'Cinzel', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        .gate-container {
+            text-align: center;
+            border: 8px solid #5a3e1b;
+            padding: 40px;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://www.transparenttextures.com/patterns/dark-stone.png');
+            box-shadow: 0 0 50px #8b4513;
+            border-radius: 50px 50px 0 0;
+            max-width: 500px;
+            position: relative;
+            transition: transform 1.5s ease-in-out, opacity 1s;
+        }
 
-<title>MKV Bro's Portal</title>
+        h1 { font-size: 3rem; margin-bottom: 0; text-shadow: 2px 2px #000; }
+        p { font-size: 1.1rem; color: #d4af37; line-height: 1.6; }
 
-<style>
+        .equation-box {
+            background: rgba(45, 25, 10, 0.9);
+            border: 3px solid #f0c05a;
+            padding: 20px;
+            font-size: 2.5rem;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-body{
-margin:0;
-height:100vh;
-background:url("portal.png") center/cover no-repeat;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:Georgia;
-overflow:hidden;
-color:#f4d37a;
-}
+        input {
+            width: 80px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid #f0c05a;
+            color: #ff4500;
+            text-align: center;
+            font-size: 2.5rem;
+            outline: none;
+            font-family: 'Cinzel', serif;
+        }
 
-/* FIRE LAMPS */
+        input::placeholder { color: #f0c05a; }
 
-.fire{
-position:absolute;
-width:120px;
-bottom:32%;
-filter:drop-shadow(0 0 15px orange);
-}
+        .skull { font-size: 4rem; margin-top: 20px; filter: drop-shadow(0 0 10px orange); }
 
-.fire.left{left:6%;}
-.fire.right{right:6%;}
-
-/* SKELETON */
-
-.skeleton{
-position:absolute;
-width:170px;
-bottom:18%;
-left:50%;
-transform:translateX(-50%);
-transition:0.4s;
-}
-
-/* GOLD QUESTION BOX */
-
-.box{
-position:absolute;
-bottom:45%;
-left:50%;
-transform:translateX(-50%);
-background:gold;
-padding:12px 22px;
-border-radius:8px;
-font-size:30px;
-color:black;
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-/* INPUT */
-
-input{
-width:70px;
-font-size:26px;
-text-align:center;
-border:none;
-border-radius:4px;
-}
-
-/* QUESTION MARK */
-
-.qmark{
-cursor:pointer;
-color:#444;
-font-weight:bold;
-}
-
-</style>
-
+        /* Animation for opening the door */
+        .gate-open {
+            transform: scale(2) translateY(-100%);
+            opacity: 0;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<img src="fire.gif" class="fire left">
-<img src="fire.gif" class="fire right">
+    <div class="gate-container" id="gate">
+        <h1>MKV Bro's</h1>
+        <p>Welcome to MKV Bro's Gaming-Garden.<br>
+           Your loneliness ends here.<br>
+           Adventure, Action, Puzzles, Maths, Brain Training, Race Etc...</p>
+        
+        <p><i>If you want to open the door first, Answer the question</i></p>
 
-<img src="skul.gif" class="skeleton" id="skull">
+        <div class="equation-box">
+            <span id="num1"></span> + <span id="num2"></span> + <span id="num3"></span> = 
+            <input type="number" id="answerInput" placeholder="?" autocomplete="off">
+        </div>
 
-<div class="box">
+        <div class="skull">💀</div>
+    </div>
 
-<span id="question"></span>
+    <script>
+        // 1. Generate 3 random numbers between 1 and 9
+        const n1 = Math.floor(Math.random() * 9) + 1;
+        const n2 = Math.floor(Math.random() * 9) + 1;
+        const n3 = Math.floor(Math.random() * 9) + 1;
+        const correctAnswer = n1 + n2 + n3;
 
-<span class="qmark" onclick="focusInput()">?</span>
+        // 2. Display them on the page
+        document.getElementById('num1').innerText = n1;
+        document.getElementById('num2').innerText = n2;
+        document.getElementById('num3').innerText = n3;
 
-<input type="number" id="answer">
+        // 3. Listen for the answer
+        const input = document.getElementById('answerInput');
+        input.addEventListener('input', function() {
+            if (parseInt(this.value) === correctAnswer) {
+                openDoor();
+            }
+        });
 
-</div>
-
-<audio id="sound" src="smil.mp3"></audio>
-
-<script>
-
-/* RANDOM NUMBERS */
-
-let a,b,c,correct
-
-function newQuestion(){
-
-a=Math.floor(Math.random()*9)+1
-b=Math.floor(Math.random()*9)+1
-c=Math.floor(Math.random()*9)+1
-
-correct=a+b+c
-
-document.getElementById("question").innerHTML=
-a+" + "+b+" + "+c+" ="
-
-}
-
-newQuestion()
-
-/* OPEN KEYBOARD */
-
-function focusInput(){
-
-document.getElementById("answer").focus()
-
-}
-
-/* CHECK ANSWER */
-
-document.getElementById("answer").addEventListener("change",function(){
-
-let value=parseInt(this.value)
-
-if(value===correct){
-
-document.getElementById("sound").play()
-
-document.getElementById("skull").style.transform=
-"translateX(-50%) scale(1.35)"
-
-setTimeout(function(){
-
-window.location="home.html"
-
-},1200)
-
-}
-
-else{
-
-alert("Wrong answer")
-
-this.value=""
-
-newQuestion()
-
-}
-
-})
-
-</script>
-
+        function openDoor() {
+            const gate = document.getElementById('gate');
+            gate.classList.add('gate-open');
+            
+            // Wait for animation, then redirect to your main games page
+            setTimeout(() => {
+                window.location.href = "home.html"; // Replace with your main page file
+            }, 1200);
+        }
+    </script>
 </body>
-
 </html>
