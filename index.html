@@ -1,88 +1,88 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
 <meta charset="UTF-8">
-<title>MKV Bro's Gaming Garden</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MKV Bro's Portal</title>
 
 <style>
 
 body{
 margin:0;
 height:100vh;
-background-image:url("gate.jpg");
-background-size:cover;
-background-position:center;
+background:url("portal.png") center/cover no-repeat;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:Arial;
-color:white;
+font-family:Georgia;
+overflow:hidden;
+color:#f4d37a;
 }
 
-/* fire */
+/* FIRE LAMPS */
 
 .fire{
 position:absolute;
-width:150px;
+width:120px;
+bottom:32%;
+filter:drop-shadow(0 0 15px orange);
 }
 
-.left{
-left:5%;
-top:35%;
+.fire.left{left:6%;}
+.fire.right{right:6%;}
+
+/* SKELETON */
+
+.skeleton{
+position:absolute;
+width:170px;
+bottom:18%;
+left:50%;
+transform:translateX(-50%);
+transition:0.4s;
 }
 
-.right{
-right:5%;
-top:35%;
-}
+/* GOLD QUESTION BOX */
 
-/* panel */
-
-.panel{
-background:rgba(0,0,0,0.7);
-padding:30px;
-border-radius:15px;
-text-align:center;
-}
-
-.question{
-font-size:40px;
-margin-bottom:20px;
-}
-
-button{
-font-size:25px;
-padding:12px 30px;
-margin:10px;
-border:none;
-border-radius:8px;
+.box{
+position:absolute;
+bottom:45%;
+left:50%;
+transform:translateX(-50%);
 background:gold;
-cursor:pointer;
-}
-
-#skull{
-font-size:70px;
-cursor:pointer;
-margin-top:20px;
-}
-
-#open{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
+padding:12px 22px;
+border-radius:8px;
+font-size:30px;
+color:black;
 display:flex;
-justify-content:center;
+gap:10px;
 align-items:center;
-font-size:50px;
-color:gold;
-opacity:0;
-transition:2s;
+}
+
+/* INPUT */
+
+input{
+width:70px;
+font-size:26px;
+text-align:center;
+border:none;
+border-radius:4px;
+}
+
+/* QUESTION MARK */
+
+.qmark{
+cursor:pointer;
+color:#444;
+font-weight:bold;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -90,49 +90,84 @@ transition:2s;
 <img src="fire.gif" class="fire left">
 <img src="fire.gif" class="fire right">
 
-<div class="panel">
+<img src="skul.gif" class="skeleton" id="skull">
 
-<div class="question">
-2 + 5 + 5 = ?
-</div>
+<div class="box">
 
-<button onclick="ans(2)">2</button>
-<button onclick="ans(4)">4</button>
-<button onclick="ans(12)">12</button>
+<span id="question"></span>
 
-<div id="skull" onclick="check()">💀</div>
+<span class="qmark" onclick="focusInput()">?</span>
+
+<input type="number" id="answer">
 
 </div>
 
-<div id="open">WELCOME TO MKV BRO'S GAMING GARDEN</div>
-
-<audio id="sound" src="laugh.mp3"></audio>
+<audio id="sound" src="smil.mp3"></audio>
 
 <script>
 
-let selected=0
+/* RANDOM NUMBERS */
 
-function ans(x){
-selected=x
+let a,b,c,correct
+
+function newQuestion(){
+
+a=Math.floor(Math.random()*9)+1
+b=Math.floor(Math.random()*9)+1
+c=Math.floor(Math.random()*9)+1
+
+correct=a+b+c
+
+document.getElementById("question").innerHTML=
+a+" + "+b+" + "+c+" ="
+
 }
 
-function check(){
+newQuestion()
 
-if(selected==12){
+/* OPEN KEYBOARD */
+
+function focusInput(){
+
+document.getElementById("answer").focus()
+
+}
+
+/* CHECK ANSWER */
+
+document.getElementById("answer").addEventListener("change",function(){
+
+let value=parseInt(this.value)
+
+if(value===correct){
 
 document.getElementById("sound").play()
 
-document.getElementById("open").style.opacity=1
+document.getElementById("skull").style.transform=
+"translateX(-50%) scale(1.35)"
 
-}else{
+setTimeout(function(){
+
+window.location="home.html"
+
+},1200)
+
+}
+
+else{
 
 alert("Wrong answer")
 
-}
+this.value=""
+
+newQuestion()
 
 }
+
+})
 
 </script>
 
 </body>
+
 </html>
