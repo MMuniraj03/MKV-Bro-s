@@ -2,226 +2,187 @@
 <html>
 <head>
 
-<title>MKV Bro's</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MKV Bro's Gaming Garden</title>
 
 <style>
 
 body{
 margin:0;
-font-family:Georgia, serif;
-color:#ffd700;
-text-align:center;
-background-image:url("https://images.unsplash.com/photo-1508612761958-e931f1f4f8b7");
+height:100vh;
+background:url("gate.jpg");
 background-size:cover;
 background-position:center;
-background-repeat:no-repeat;
-min-height:100vh;
-
 display:flex;
-flex-direction:column;
 justify-content:center;
 align-items:center;
+font-family:Georgia;
+color:white;
 overflow:hidden;
 }
 
-/* dark overlay */
+.container{
+text-align:center;
+background:rgba(0,0,0,0.6);
+padding:40px;
+border-radius:20px;
+box-shadow:0 0 40px gold;
+}
 
-body::before{
-content:"";
+h1{
+color:gold;
+font-size:50px;
+margin-bottom:20px;
+}
+
+.question{
+font-size:40px;
+margin:20px;
+}
+
+.answers button{
+font-size:28px;
+padding:15px 40px;
+margin:10px;
+border:none;
+border-radius:10px;
+background:gold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.answers button:hover{
+background:orange;
+transform:scale(1.1);
+}
+
+#skull{
+font-size:80px;
+cursor:pointer;
+margin-top:20px;
+animation:skullglow 1s infinite alternate;
+}
+
+@keyframes skullglow{
+
+from{ text-shadow:0 0 10px orange; }
+
+to{ text-shadow:0 0 40px red; }
+
+}
+
+.torch{
+position:absolute;
+top:30%;
+width:80px;
+}
+
+.left{
+left:5%;
+}
+
+.right{
+right:5%;
+}
+
+#door{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.65);
-z-index:-1;
-}
-
-/* TITLE */
-
-.title{
-font-size:48px;
-text-shadow:0 0 20px gold;
-margin-bottom:20px;
-}
-
-/* DESCRIPTION */
-
-.desc{
-max-width:700px;
-font-size:20px;
-line-height:1.6;
-}
-
-/* SKELETON */
-
-.skeleton{
-font-size:100px;
-margin-top:20px;
-transition:0.4s;
-filter:drop-shadow(0 0 15px orange);
-}
-
-/* QUESTION BOX */
-
-.question-box{
-margin-top:25px;
-padding:15px 35px;
-border-radius:10px;
-border:3px solid gold;
-background:rgba(50,50,50,0.7);
-font-size:28px;
-}
-
-/* SLOT NUMBERS */
-
-.slot{
-display:inline-block;
-width:40px;
-transition:0.3s;
-}
-
-/* CLICK QUESTION */
-
-.ask{
-cursor:pointer;
-color:white;
-text-shadow:0 0 8px white;
-}
-
-/* FIRE TORCHES */
-
-.torch{
-position:absolute;
-font-size:45px;
-animation:flicker 0.15s infinite alternate;
-}
-
-.left{left:25px;top:50%;}
-.right{right:25px;top:50%;}
-
-@keyframes flicker{
-from{transform:scale(1) rotate(-2deg);}
-to{transform:scale(1.15) rotate(2deg);}
-}
-
-/* SLOT SPIN ANIMATION */
-
-.spin{
-animation:spin 0.1s linear infinite;
-}
-
-@keyframes spin{
-from{transform:translateY(-10px)}
-to{transform:translateY(10px)}
-}
-
-/* DOOR OPEN EFFECT */
-
-.open{
-animation:doorOpen 1.2s forwards;
-}
-
-@keyframes doorOpen{
-0%{transform:scale(1)}
-100%{transform:scale(2);opacity:0}
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:60px;
+color:gold;
+opacity:0;
+pointer-events:none;
+transition:1.5s;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="torch left">🔥</div>
-<div class="torch right">🔥</div>
+<img src="fire.gif" class="torch left">
+<img src="fire.gif" class="torch right">
 
-<div class="title">MKV Bro’s</div>
+<div class="container">
 
-<div class="desc">
+<h1>MKV Bro's Gate</h1>
 
-Welcome to MKV Bro’s Gaming-Garden.<br>
-Your loneliness ends here.<br>
-We have Adventure, Action, Puzzles, Maths,
-Brain Training, Race Etc…<br><br>
+<div id="question" class="question"></div>
 
-If you want to open the door first,
-Answer the question
+<div class="answers" id="answers"></div>
+
+<div id="skull">💀</div>
 
 </div>
 
-<div class="skeleton" id="skull">💀</div>
+<div id="door">Gate Opening...</div>
 
-<div class="question-box">
-
-<span id="n1" class="slot">2</span> +
-<span id="n2" class="slot">5</span> +
-<span id="n3" class="slot">5</span>
-=
-<span class="ask" onclick="enterAnswer()">?</span>
-
-</div>
+<audio id="sound" src="open.mp3"></audio>
 
 <script>
 
-let a,b,c,answer
+let a=Math.floor(Math.random()*10)+1
+let b=Math.floor(Math.random()*10)+1
+let c=Math.floor(Math.random()*10)+1
 
-function newQuestion(){
+let correct=a+b+c
 
-a=Math.floor(Math.random()*9)+1
-b=Math.floor(Math.random()*9)+1
-c=Math.floor(Math.random()*9)+1
+document.getElementById("question").innerHTML=a+" + "+b+" + "+c+" = ?"
 
-answer=a+b+c
+let options=[correct,correct+2,correct-2]
 
-document.getElementById("n1").innerText=a
-document.getElementById("n2").innerText=b
-document.getElementById("n3").innerText=c
+options.sort(()=>Math.random()-0.5)
 
-}
+let selected=null
 
-function spinNumbers(){
+options.forEach(function(num){
 
-let slots=document.querySelectorAll(".slot")
+let btn=document.createElement("button")
 
-slots.forEach(s=>s.classList.add("spin"))
+btn.innerHTML=num
 
-setTimeout(()=>{
+btn.onclick=function(){
 
-slots.forEach(s=>s.classList.remove("spin"))
-newQuestion()
-
-},900)
+selected=num
 
 }
 
-function enterAnswer(){
+document.getElementById("answers").appendChild(btn)
 
-let user=prompt("Enter the answer")
+})
 
-let skull=document.getElementById("skull")
+document.getElementById("skull").onclick=function(){
 
-if(user==answer){
+if(selected==correct){
 
-skull.innerText="😄"
-document.body.classList.add("open")
+document.getElementById("sound").play()
 
-setTimeout(()=>{
-window.location="games.html"
-},1200)
+let door=document.getElementById("door")
+
+door.style.opacity=1
+
+setTimeout(function(){
+
+window.location="home.html"
+
+},2000)
 
 }
 
 else{
 
-skull.innerText="😡"
-spinNumbers()
+alert("Wrong answer ❌ Try again")
 
 }
 
 }
-
-newQuestion()
 
 </script>
 
