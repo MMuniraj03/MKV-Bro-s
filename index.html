@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>MKV Bro's Gaming Garden</title>
 
 <style>
@@ -8,41 +9,40 @@
 body{
 margin:0;
 height:100vh;
-background:url("gate.png") no-repeat center center;
+background-image:url("gate.jpg");
 background-size:cover;
+background-position:center;
 display:flex;
 justify-content:center;
 align-items:center;
-font-family:Georgia;
+font-family:Arial;
 color:white;
-overflow:hidden;
 }
 
-/* fire torches */
+/* fire */
 
 .fire{
 position:absolute;
-width:120px;
+width:150px;
 }
 
-.leftfire{
-left:7%;
+.left{
+left:5%;
 top:35%;
 }
 
-.rightfire{
-right:7%;
+.right{
+right:5%;
 top:35%;
 }
 
-/* question panel */
+/* panel */
 
 .panel{
-background:rgba(0,0,0,0.65);
+background:rgba(0,0,0,0.7);
 padding:30px;
 border-radius:15px;
 text-align:center;
-box-shadow:0 0 25px orange;
 }
 
 .question{
@@ -50,11 +50,9 @@ font-size:40px;
 margin-bottom:20px;
 }
 
-/* buttons */
-
 button{
-font-size:28px;
-padding:12px 35px;
+font-size:25px;
+padding:12px 30px;
 margin:10px;
 border:none;
 border-radius:8px;
@@ -62,27 +60,13 @@ background:gold;
 cursor:pointer;
 }
 
-button:hover{
-background:orange;
-}
-
-/* skull button */
-
 #skull{
-font-size:80px;
+font-size:70px;
 cursor:pointer;
 margin-top:20px;
-animation:glow 1s infinite alternate;
 }
 
-@keyframes glow{
-from{ text-shadow:0 0 10px orange; }
-to{ text-shadow:0 0 35px red; }
-}
-
-/* gate opening screen */
-
-#openGate{
+#open{
 position:fixed;
 top:0;
 left:0;
@@ -95,7 +79,6 @@ align-items:center;
 font-size:50px;
 color:gold;
 opacity:0;
-pointer-events:none;
 transition:2s;
 }
 
@@ -104,9 +87,8 @@ transition:2s;
 
 <body>
 
-<!-- fire torches -->
-<img src="fire.gif" class="fire leftfire">
-<img src="fire.gif" class="fire rightfire">
+<img src="fire.gif" class="fire left">
+<img src="fire.gif" class="fire right">
 
 <div class="panel">
 
@@ -114,41 +96,37 @@ transition:2s;
 2 + 5 + 5 = ?
 </div>
 
-<button onclick="selectAnswer(2)">2</button>
-<button onclick="selectAnswer(4)">4</button>
-<button onclick="selectAnswer(12)">12</button>
+<button onclick="ans(2)">2</button>
+<button onclick="ans(4)">4</button>
+<button onclick="ans(12)">12</button>
 
-<div id="skull" onclick="checkAnswer()">💀</div>
+<div id="skull" onclick="check()">💀</div>
 
 </div>
 
-<div id="openGate">WELCOME TO MKV GAMING GARDEN</div>
+<div id="open">WELCOME TO MKV BRO'S GAMING GARDEN</div>
 
-<audio id="sound">
-<source src="laugh.mp3" type="audio/mpeg">
-</audio>
+<audio id="sound" src="laugh.mp3"></audio>
 
 <script>
 
-let selected=null
+let selected=0
 
-function selectAnswer(num){
-selected=num
+function ans(x){
+selected=x
 }
 
-function checkAnswer(){
+function check(){
 
 if(selected==12){
 
 document.getElementById("sound").play()
 
-let gate=document.getElementById("openGate")
-
-gate.style.opacity=1
+document.getElementById("open").style.opacity=1
 
 }else{
 
-alert("Wrong answer ❌")
+alert("Wrong answer")
 
 }
 
